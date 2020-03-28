@@ -1,7 +1,7 @@
 var { resolve } = require("path");
 var express = require("express");
 var env = require("dotenv").config({ path: "./.env" });
-
+const port = process.env.PORT || 4000;
 // 1. Set up your server to make calls to PayPal
 
 // 1a. Import the SDK package
@@ -116,6 +116,6 @@ app.post("/capturetransaction/:orderID", async function(req, res) {
 });
 // END PAYPAL SERVER LOGIC ===========================================
 
-app.listen("4000", function() {
+app.listen(port, function() {
   console.log("Running on port 4000");
 });
