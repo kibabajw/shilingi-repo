@@ -40,6 +40,8 @@
                 return res.json();
               })
               .then(function(details) {
+                console.log(details);
+                
                 // Handle Funding Failures
                 // If your buyer's funding source fails, the Orders API returns an INSTRUMENT_DECLINED error
                 if (details.error === "INSTRUMENT_DECLINED") {
