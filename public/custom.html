@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Ensures optimal rendering on mobile devices. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Optimal Internet Explorer compatibility -->
+    <title>Custom Pay</title>
+  </head>
+  <body>
+    <div id="paypal-button-container"></div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=Ae_qS8wU9-kYuUmYNtEoi7rlN5Au6zh8JRbRY0zdcsUwJGZxoqUAFBFqzCz_o89_idb4u7ob8_5ZvUI9&currency=USD&intent=capture&commit=true&components=buttons"></script>
+
+    <script>
+      paypal
+        .Buttons({
+          createOrder: function() {
+            return fetch("/payup", {
+              method: "post",
+              headers: {
+                "content-type": "application/json"
+              }
+            })
+              .then(function(res) {
+                return res.json();
+              })
+              .then(function(data) {
+                return data.orderID; //Use the same key name for order ID on the client and server
+              });
+          },
+          onApprove: function(data, actions) {
+            return fetch("/capturetransaction/" + data.orderID, {
+              method: "POST",
+              headers: {
+                "content-type": "application/json"
+              }
+            })
+              .then(function(res) {
+                return res.json();
+              })
+              .then(function(details) {
+                // Handle Funding Failures
+                // If your buyer's funding source fails, the Orders API returns an INSTRUMENT_DECLINED error
+                if (details.error === "INSTRUMENT_DECLINED") {
+                  return actions.restart();
+                }
+              });
+          },
+          onCancel: function(data, actions) {
+            alert("You have cancelled this transaction.");
+          },
+          onError: function(err) {
+            // Show an error page here, when an error occurs
+            alert(
+              "We cannot complete this transaction at the moment, please try again later."
+            );
+          }
+        })
+        .render("#paypal-button-container");
+    </script>
+  </body>
+</html>
