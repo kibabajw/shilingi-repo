@@ -53,7 +53,8 @@
           onError: function(err) {
             // Show an error page here, when an error occurs
             alert(
-              "We cannot complete this transaction at the moment, please try again later."
+              "We cannot complete this transaction at the moment, please try again later. " +
+                err
             );
           }
         })
