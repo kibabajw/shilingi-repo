@@ -37,6 +37,8 @@
               }
             })
               .then(function(res) {
+                console.log('RESPONSE: ', res);
+                
                 return res.json();
               })
               .then(function(details) {
