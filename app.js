@@ -105,6 +105,27 @@ app.post("/capturetransaction/:orderID", async function(req, res) {
     console.error(err);
     return res.send(500);
   }
+
+  // start handling webhooks
+  var webhook_json = {
+    url: 'https://limitless-badlands-74387.herokuapp.com/success',
+    event_types: [{
+      name: 'PAYMENT.SALE.COMPLETED'
+    },{
+      name: 'PAYMENT.SALE.DENIED'
+    }]
+  };
+  paypal.notification.webhook.create(webhook_json, function (error, webhook) {
+    if (error) {
+      console.error(JSON.stringify(error.response));
+      throw error;
+    } else {
+      console.log('Create webhook Response');
+      console.log(webhook);
+    }
+  });
+  // end handling webhooks
+
   // 6. Return a successful response to the client
   res.status(200).json({ capture });
 });
