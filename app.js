@@ -22,8 +22,44 @@ app.get("/", function(req, res) {
 
 app.get("/buy/:id", function(req, res, next) {});
 
-app.get("/success", function(req, res) {
+app.post("/success", function(req, res) {
+  var webhookEventId = "8J050554WD5393019";
+
+  paypal.notification.webhookEvent.get(webhookEventId, function(
+    error,
+    webhookEvent
+  ) {
+    if (error) {
+      console.log(error);
+      throw error;
+    } else {
+      console.log("Get webhookEvent Response");
+      console.log(JSON.stringify(webhookEvent));
+    }
+  });
   res.send("<h3>Payment was successful</h3>");
+
+  // var create_webhook_json = {
+  //     "url": "https://www.yeowza.com/paypal_webhook",
+  //     "event_types": [
+  //         {
+  //             "name": "PAYMENT.AUTHORIZATION.CREATED"
+  //         },
+  //         {
+  //             "name": "PAYMENT.AUTHORIZATION.VOIDED"
+  //         }
+  //     ]
+  // };
+
+  // paypal.notification.webhook.create(create_webhook_json, function (error, webhook) {
+  //     if (error) {
+  //         console.log(error.response);
+  //         throw error;
+  //     } else {
+  //         console.log("Create webhook Response");
+  //         console.log(webhook);
+  //     }
+  // });
 });
 
 app.get("/failed", function(req, res) {
@@ -43,7 +79,7 @@ app.post("/payup", async function handleRequest(req, res) {
       {
         amount: {
           currency_code: "USD",
-          value: "01.50"
+          value: "01.10"
         }
       }
     ]
@@ -91,28 +127,23 @@ app.post("/gettransactiondetails", async function(req, res) {
 app.post("/capturetransaction/:orderID", async function(req, res) {
   // 2a. Get the order ID from the request body
   const orderID = req.params.orderID;
-
   // 3. Call PayPal to capture the order
   const request = new paypal.orders.OrdersCaptureRequest(orderID);
   request.requestBody({});
   let capture;
   try {
     capture = await paypalClient.client().execute(request);
-
     // 4. Save the capture ID to your database. Implement logic to save capture to your database for future reference.
     const captureID = capture.result.purchase_units[0].payments.captures[0].id;
-
     // await database.saveCaptureID(captureID);
   } catch (err) {
     // 5. Handle any errors from the call
     console.error(err);
     return res.send(500);
   }
-
   // 6. Return a successful response to the client
-  console.log(JSON.stringify(capture));
-
-  res.sendStatus(200);
+  console.log("CAPTURED TRANSACTION = ", JSON.stringify(capture));
+  res.status(200).json({ capture });
 });
 // END PAYPAL SERVER LOGIC ===========================================
 
