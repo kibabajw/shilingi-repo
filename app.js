@@ -106,7 +106,6 @@ app.post("/capturetransaction/:orderID", async function(req, res) {
     return res.send(500);
   }
   // 6. Return a successful response to the client
-  console.log("CAPTURED TRANSACTION = ", JSON.stringify(capture));
   res.status(200).json({ capture });
 });
 // END PAYPAL SERVER LOGIC ===========================================
