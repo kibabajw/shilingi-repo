@@ -22,7 +22,7 @@ app.get("/", function(req, res) {
 
 app.get("/buy/:id", function(req, res, next) {});
 
-app.post("/success", function(req, res) {
+app.get("/success", function(req, res) {
   res.send("<h3>Payment was successful</h3>");
 });
 
