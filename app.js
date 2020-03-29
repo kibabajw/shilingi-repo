@@ -23,43 +23,7 @@ app.get("/", function(req, res) {
 app.get("/buy/:id", function(req, res, next) {});
 
 app.post("/success", function(req, res) {
-  var webhookEventId = "8J050554WD5393019";
-
-  paypal.notification.webhookEvent.get(webhookEventId, function(
-    error,
-    webhookEvent
-  ) {
-    if (error) {
-      console.log(error);
-      throw error;
-    } else {
-      console.log("Get webhookEvent Response");
-      console.log(JSON.stringify(webhookEvent));
-    }
-  });
   res.send("<h3>Payment was successful</h3>");
-
-  // var create_webhook_json = {
-  //     "url": "https://www.yeowza.com/paypal_webhook",
-  //     "event_types": [
-  //         {
-  //             "name": "PAYMENT.AUTHORIZATION.CREATED"
-  //         },
-  //         {
-  //             "name": "PAYMENT.AUTHORIZATION.VOIDED"
-  //         }
-  //     ]
-  // };
-
-  // paypal.notification.webhook.create(create_webhook_json, function (error, webhook) {
-  //     if (error) {
-  //         console.log(error.response);
-  //         throw error;
-  //     } else {
-  //         console.log("Create webhook Response");
-  //         console.log(webhook);
-  //     }
-  // });
 });
 
 app.get("/failed", function(req, res) {
